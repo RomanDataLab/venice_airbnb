@@ -1,10 +1,4 @@
 import L from 'leaflet';
-import { stadiaMapsConfig } from './config.js';
-
-// Verify config loaded
-if (!stadiaMapsConfig || !stadiaMapsConfig.apiKey) {
-  console.error('Stadia Maps config not loaded properly!');
-}
 
 // Fix for default marker icon in Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,28 +20,14 @@ function initMap() {
   
   map = L.map('map').setView([45.4408, 12.3155], 13);
 
-  // Detect if running locally (localhost) or in production
-  const isLocalhost = window.location.hostname === 'localhost' || 
-                      window.location.hostname === '127.0.0.1' ||
-                      window.location.hostname === '';
-  
-  if (isLocalhost) {
-    // Use free CartoDB Dark Matter tile layer for local development
-    console.log('Running locally - using free CartoDB Dark Matter tiles');
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
-    }).addTo(map);
-  } else {
-    // Use Stadia Maps with API key for production
-    console.log('Running in production - using Stadia Maps with API key');
-    const stadiaMapsUrl = `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaMapsConfig.apiKey}`;
-    L.tileLayer(stadiaMapsUrl, {
-      attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>',
-      maxZoom: 20
-    }).addTo(map);
-  }
+  // Use OpenStreetMap dark tiles (CartoDB Dark Matter) for both local and production
+  // This is free and doesn't require an API key
+  console.log('Using OpenStreetMap dark tiles (CartoDB Dark Matter)');
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
+  }).addTo(map);
   
   console.log('Map initialized successfully');
 }
