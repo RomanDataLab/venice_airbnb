@@ -1,0 +1,7 @@
+requests>=2.31.0
+duckdb>=0.9.0
+geopandas>=0.14.0
+shapely>=2.0.0
+pandas>=2.0.0
+jenkspy>=0.3.2
+
