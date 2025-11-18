@@ -1,0 +1,12 @@
+*.py
+requirements.txt
+Venezia/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv
+

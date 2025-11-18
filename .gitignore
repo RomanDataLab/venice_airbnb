@@ -9,6 +9,9 @@ venv/
 ENV/
 .venv
 
+# Vercel
+.vercel
+
 # Node
 node_modules/
 dist/
