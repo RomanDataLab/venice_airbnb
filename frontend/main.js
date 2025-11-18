@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import { stadiaMapsConfig } from './config.js';
 
 // Fix for default marker icon in Vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,7 +13,8 @@ L.Icon.Default.mergeOptions({
 const map = L.map('map').setView([45.4408, 12.3155], 13);
 
 // Add Alidade Smooth Dark tile layer (via Stadia Maps)
-L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+const stadiaMapsUrl = `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaMapsConfig.apiKey}`;
+L.tileLayer(stadiaMapsUrl, {
   attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>',
   maxZoom: 20
 }).addTo(map);
@@ -1454,7 +1456,7 @@ function createDashboard() {
     
     setTimeout(() => {
       // Initial legend and pie chart update
-      updateLegend();
+        updateLegend();
       updatePieChart();
     }, 100);
     
@@ -1703,7 +1705,7 @@ function createNeighborhoodLegend() {
         let rangeText;
         if (isPrice) {
           rangeText = `€${rangeStartInt.toLocaleString()}-€${rangeEndInt.toLocaleString()}`;
-        } else {
+      } else {
           rangeText = `${rangeStartInt.toLocaleString()}-${rangeEndInt.toLocaleString()}${unit}`;
         }
         
