@@ -1269,41 +1269,40 @@ function updatePieChart() {
       const segments = pieChartContainer.querySelectorAll('.pie-segment');
       const tooltip = document.getElementById('pie-tooltip');
       
-      segments.forEach(segment => {
-        segment.addEventListener('mouseenter', function(e) {
-          const count = this.getAttribute('data-count');
-          const range = this.getAttribute('data-range');
-          const guestCount = this.getAttribute('data-guest-count');
-          const listingTotal = this.getAttribute('data-listing-total');
-          const priceTotal = this.getAttribute('data-price-total');
-          if (tooltip && count) {
-            // For accommodates mode, show guest count instead of building count
-            if (currentColorMode === 'accommodates' && guestCount) {
-              tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${parseInt(guestCount).toLocaleString()} guests</div>`;
-            } else if (currentColorMode === 'listing_count' && listingTotal) {
-              // For listing_count mode, show number of listings
-              tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${parseInt(listingTotal).toLocaleString()} listings</div>`;
-            } else if (currentColorMode === 'price' && priceTotal) {
-              // For price mode, show guest count above and total price per segment with € symbol
-              const priceGuestCount = this.getAttribute('data-price-guest-count');
-              let tooltipContent = '';
-              if (priceGuestCount) {
-                tooltipContent += `<div style="font-size: 10px; opacity: 0.9;">${parseInt(priceGuestCount).toLocaleString()} guests</div>`;
-              }
-              tooltipContent += `<div style="font-size: 10px; opacity: 0.9;">€${parseInt(priceTotal).toLocaleString()}</div>`;
-              tooltip.innerHTML = tooltipContent;
-            } else {
-              tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${count} buildings</div>`;
+      function showSegmentTooltip(segment) {
+        const count = segment.getAttribute('data-count');
+        const range = segment.getAttribute('data-range');
+        const guestCount = segment.getAttribute('data-guest-count');
+        const listingTotal = segment.getAttribute('data-listing-total');
+        const priceTotal = segment.getAttribute('data-price-total');
+        if (tooltip && count) {
+          if (currentColorMode === 'accommodates' && guestCount) {
+            tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${parseInt(guestCount).toLocaleString()} guests</div>`;
+          } else if (currentColorMode === 'listing_count' && listingTotal) {
+            tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${parseInt(listingTotal).toLocaleString()} listings</div>`;
+          } else if (currentColorMode === 'price' && priceTotal) {
+            const priceGuestCount = segment.getAttribute('data-price-guest-count');
+            let tooltipContent = '';
+            if (priceGuestCount) {
+              tooltipContent += `<div style="font-size: 10px; opacity: 0.9;">${parseInt(priceGuestCount).toLocaleString()} guests</div>`;
             }
-            tooltip.style.opacity = '1';
+            tooltipContent += `<div style="font-size: 10px; opacity: 0.9;">€${parseInt(priceTotal).toLocaleString()}</div>`;
+            tooltip.innerHTML = tooltipContent;
+          } else {
+            tooltip.innerHTML = `<div>${range}</div><div style="font-size: 10px; opacity: 0.9;">${count} buildings</div>`;
           }
-        });
-        
-        segment.addEventListener('mouseleave', function(e) {
-          if (tooltip) {
-            tooltip.style.opacity = '0';
-          }
-        });
+          tooltip.style.opacity = '1';
+        }
+      }
+
+      segments.forEach(segment => {
+        segment.addEventListener('mouseenter', function() { showSegmentTooltip(this); });
+        segment.addEventListener('mouseleave', function() { if (tooltip) tooltip.style.opacity = '0'; });
+        segment.addEventListener('touchstart', function(e) {
+          e.stopPropagation();
+          showSegmentTooltip(this);
+          setTimeout(() => { if (tooltip) tooltip.style.opacity = '0'; }, 2000);
+        }, { passive: true });
       });
     }
   }, 100);
@@ -1397,7 +1396,7 @@ function createDashboard() {
           button.style.opacity = '0.9';
         }
       });
-      
+
       button.addEventListener('mouseleave', function() {
         tooltip.style.opacity = '0';
         if (!config.active) {
@@ -1405,7 +1404,13 @@ function createDashboard() {
           button.style.opacity = '1';
         }
       });
-      
+
+      // Touch: briefly show tooltip on tap
+      button.addEventListener('touchstart', function() {
+        tooltip.style.opacity = '1';
+        setTimeout(() => { tooltip.style.opacity = '0'; }, 1500);
+      }, { passive: true });
+
       // Add click handler to switch modes
       button.addEventListener('click', function() {
         // Update current color mode
@@ -1599,7 +1604,13 @@ function createNeighborhoodLegend() {
           button.style.opacity = '1';
         }
       });
-      
+
+      // Touch: briefly show tooltip on tap
+      button.addEventListener('touchstart', function() {
+        tooltip.style.opacity = '1';
+        setTimeout(() => { tooltip.style.opacity = '0'; }, 1500);
+      }, { passive: true });
+
       // Add click handler
       button.addEventListener('click', function() {
         // Toggle classification
@@ -1810,7 +1821,13 @@ function createNeighborhoodLegend() {
     
     // Hide neighborhoods by default
     hideNeighborhoods();
-    
+
+    // Auto-collapse on mobile
+    if (window.innerWidth <= 768) {
+      contentContainer.style.display = 'none';
+      toggleBtn.textContent = '□';
+    }
+
     // Add minimize/maximize functionality
     L.DomEvent.on(toggleBtn, 'click', function(e) {
       L.DomEvent.stopPropagation(e);
@@ -1823,12 +1840,12 @@ function createNeighborhoodLegend() {
         toggleBtn.textContent = '□';
       }
     });
-    
+
     // Add event listeners
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.on(showButton, 'click', showNeighborhoods);
     L.DomEvent.on(hideButton, 'click', hideNeighborhoods);
-    
+
     return div;
   };
   

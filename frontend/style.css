@@ -158,3 +158,85 @@ body {
   animation: flicker 1.5s linear infinite;
 }
 
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  /* Stack panels vertically on mobile */
+  .leaflet-top.leaflet-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .leaflet-top.leaflet-right .leaflet-control {
+    margin: 0 !important;
+  }
+
+  /* Dashboard panel */
+  .airbnb-dashboard {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    max-width: 55vw !important;
+    font-size: 11px !important;
+  }
+
+  /* Neighborhood legend panel */
+  .neighborhood-legend {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    max-width: 55vw !important;
+    width: auto !important;
+    margin-top: 4px !important;
+  }
+
+  /* Smaller pie chart on mobile */
+  .pie-chart svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Make mode buttons more touch-friendly */
+  .mode-button {
+    min-height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .neighborhood-classification-btn {
+    min-height: 28px !important;
+    min-width: 28px !important;
+  }
+
+  /* Show tooltips on tap (touch devices) */
+  .mode-button-tooltip,
+  .classification-button-tooltip {
+    font-size: 11px !important;
+  }
+
+  /* Neighborhood tooltip - fit to screen */
+  .neighborhood-tooltip {
+    max-width: 80vw !important;
+    font-size: 10px !important;
+  }
+
+  /* Reduce label font size */
+  .barri-label div {
+    font-size: 9px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .airbnb-dashboard,
+  .neighborhood-legend {
+    max-width: 65vw !important;
+    padding: 6px !important;
+  }
+
+  .airbnb-dashboard {
+    font-size: 10px !important;
+  }
+}
+
