@@ -37,3 +37,6 @@ Thumbs.db
 .env
 .env.local
 
+# Project documentation (local only)
+graph.md
+
